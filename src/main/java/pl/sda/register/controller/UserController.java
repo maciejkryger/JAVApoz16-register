@@ -16,9 +16,10 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public ModelAndView usersListView(@RequestParam(required = false) String firstName) {//TODO: task if firstName is not null, filter via it (url structure: /users?firstName=test)
+    public ModelAndView usersListView(@RequestParam(required = false) String firstName,
+                                      @RequestParam(required = false) boolean exactMatch) {//TODO: task if firstName is not null, filter via it (url structure: /users?firstName=test)
         ModelAndView modelAndView = new ModelAndView("users");
-        modelAndView.addObject("users", userService.findAllUserNames());
+        modelAndView.addObject("users", userService.findAllUserNames(firstName, exactMatch));
         return modelAndView;
     }
 
@@ -28,6 +29,33 @@ public class UserController {
         modelAndView.addObject("user", userService.findUserByUserName(username));
         return modelAndView;
     }
+
+    @GetMapping("/users/delete/{username}")
+    public String removeUser(@PathVariable String username) {
+        userService.removeUser(username);
+        return "redirect:/users";
+    }
+
+    @GetMapping("/users/search")
+    public ModelAndView searchUserView() {
+        return new ModelAndView("search");
+    }
+
+    @PostMapping("/user/update")
+    public String updateUser(@ModelAttribute User user){
+        userService.updateUser(user);
+        return "redirect:/users/"+user.getUsername();
+    }
+
+
+    @GetMapping("/user/update/{username}")
+    public ModelAndView updateUserView(@PathVariable String username) {
+        ModelAndView modelAndView = new ModelAndView("addUser");
+        modelAndView.addObject("user", userService.findUserByUserName(username));
+        modelAndView.addObject("update",true);
+        return modelAndView;
+    }
+
 
     @GetMapping("/user/add")
     public ModelAndView createUserView() {
@@ -39,6 +67,7 @@ public class UserController {
     @PostMapping("/user")
     public String addUser(@ModelAttribute User user) {
         //TODO: task is to add user to repository
+        userService.addUser(user);
         return "redirect:/users";
     }
 }

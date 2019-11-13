@@ -17,6 +17,18 @@ public class User {
         this.lastName = lastName;
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -34,13 +46,11 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(username, user.username) &&
-                Objects.equals(firstName, user.firstName) &&
-                Objects.equals(lastName, user.lastName);
+        return username.equals(user.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(username, firstName, lastName);
+        return Objects.hash(username);
     }
 }
